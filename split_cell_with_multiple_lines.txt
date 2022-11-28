@@ -1,0 +1,36 @@
+
+
+
+Public Sub separate_line_break()
+    colArray = Array("L", "M", "O", "Q", "S", "T", "AD")   'Define what columns you want to split
+    check_col = colArray(0)
+    ColLastRow = Range(check_col & Rows.Count).End(xlUp).Row
+    Application.ScreenUpdating = False
+    For Each Rng In Range(check_col & "1" & ":" & check_col & ColLastRow)
+        If InStr(Rng.Value, vbLf) Then
+            Rng.EntireRow.Copy
+            Rng.EntireRow.Insert
+            
+            For i = 0 To UBound(colArray)
+                c = colArray(i)
+                
+                Set currentrng = Range(c & Rng.Row)
+                Set upperRng = currentrng.Offset(-1, 0)
+            
+                upperRng.Value = Mid(currentrng.Value, 1, InStr(currentrng.Value, vbLf) - 1)
+                currentrng.Value = Mid(currentrng.Value, Len(upperRng.Value) + 2, Len(currentrng.Value))
+            Next i
+        End If
+    Next
+    
+    ColLastRow2 = Range(check_col & Rows.Count).End(xlUp).Row
+    For Each Rng2 In Range(check_col & "1" & ":" & check_col & ColLastRow2)
+        If Len(Rng2) = 0 Then
+            Rng2.EntireRow.Delete
+        End If
+    Next
+    Application.ScreenUpdating = True
+End Sub
+
+
+
